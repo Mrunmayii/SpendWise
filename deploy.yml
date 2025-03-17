@@ -1,0 +1,31 @@
+- name: Deploy Calculator Container Using Docker
+  hosts: localhost
+  remote_user: mrunmayi
+  become: false
+  tasks:
+    - name: Pull the latest Docker image from Docker Hub
+      shell: docker pull mrunmayi12/expense-tracker
+      register: pull_result
+
+    - name: Display Docker Pull Result
+      debug:
+        var: pull_result
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+
+    - name: Stop and remove old container if it exists
+      shell: |
+        docker stop expense-tracker || true
+        docker rm expense-tracker || true
+      ignore_errors: yes
+
+    - name: Run the Docker container
+      command: docker run -it -d --name expense-tracker -p 5000:8080 mrunmayi12/expense-tracker:latest
+      register: run_result
+
+    - name: Display Container Run Result
+      debug:
+        var: run_result.stdout
