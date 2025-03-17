@@ -5,6 +5,8 @@ pipeline {
             DOCKER_TAG = 'mrunmayi12/expense-tracker:latest'
 //             GITHUB_REPO_URL = 'https://github.com/Mrunmayii/SpendWise.git'
             DOCKER_CREDENTIALS = 'docker-cred'
+            DB_USER = 'DB_USER'
+            DB_PASS = 'DB_PASS'
     }
     stages {
         stage('Build') {
@@ -46,9 +48,12 @@ pipeline {
         }
         stage('Deploy using Ansible') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'local-cred', usernameVariable: 'ANSIBLE_USER', passwordVariable: 'ANSIBLE_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'local-cred', usernameVariable: 'ANSIBLE_USER', passwordVariable: 'ANSIBLE_PASS'),
+                 string(credentialsId: 'DB_USER', variable: 'DB_USER'),
+                 string(credentialsId: 'DB_PASS', variable: 'DB_PASS')
+                ]) {
                       sh '''
-                            ansible-playbook -i inventory.ini deploy.yml --extra-vars "ansible_user=$ANSIBLE_USER ansible_ssh_pass=$ANSIBLE_PASS"
+                            ansible-playbook -i inventory.ini deploy.yml --extra-vars "ansible_user=$ANSIBLE_USER ansible_ssh_pass=$ANSIBLE_PASS DB_USER=$DB_USER DB_PASS=$DB_PASS"
                          '''
                 }
             }
