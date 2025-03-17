@@ -5,10 +5,21 @@ pipeline {
             DOCKER_TAG = 'mrunmayi12/expense-tracker:latest'
 //             GITHUB_REPO_URL = 'https://github.com/Mrunmayii/SpendWise.git'
             DOCKER_CREDENTIALS = 'docker-cred'
-            DB_USER = 'DB_USER'
-            DB_PASS = 'DB_PASS'
+            DB_USER = credentials('DB_USER')
+            DB_PASS = credentials('DB_PASS')
     }
     stages {
+        stage('Set Environment Variables') {
+            steps {
+                withCredentials([string(credentialsId: 'DB_USER', variable: 'DB_USER'),
+                                 string(credentialsId: 'DB_PASS', variable: 'DB_PASS')]) {
+                    script {
+                        env.DB_USER = DB_USER
+                        env.DB_PASS = DB_PASS
+                    }
+                }
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn clean package'
