@@ -7,6 +7,7 @@ pipeline {
             DOCKER_CREDENTIALS = 'docker-cred'
             DB_USER = credentials('DB_USER')
             DB_PASS = credentials('DB_PASS')
+            JWT_SECRET = credentials('JWT_SECRET')
     }
     stages {
         stage('Set Environment Variables') {

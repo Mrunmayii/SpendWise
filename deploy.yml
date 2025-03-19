@@ -26,8 +26,8 @@
 
     - name: Stop and remove old container if it exists
       shell: |
-        docker stop expense-tracker || true
-        docker rm expense-tracker || true
+        docker stop expense-tracker-backend || true
+        docker rm expense-tracker-backend || true
         docker stop expense-tracker-frontend || true
         docker rm expense-tracker-frontend || true
       ignore_errors: yes
