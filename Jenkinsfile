@@ -58,22 +58,6 @@ pipeline {
                 sh "docker rmi ${DOCKER_IMAGE_NAME} || true"
             }
         }
-        stage('Run Database Container') {
-            steps {
-                script {
-                    sh '''
-                    docker volume create mysql_data
-
-                    docker run -d --name expense-tracker-db \
-                    -e MYSQL_DATABASE=spendwise \
-                    -e MYSQL_USER=$DB_USER \
-                    -e MYSQL_PASSWORD=$DB_PASS \
-                    -p 3306:3306 \
-                    mysql:latest
-                    '''
-                }
-            }
-        }
         stage('Deploy using Ansible') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'local-cred', usernameVariable: 'ANSIBLE_USER', passwordVariable: 'ANSIBLE_PASS'),
