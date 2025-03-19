@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker --version'
-                    sh "docker build -t ${DOCKER_IMAGE_NAME} ."
+                    sh "docker build --build-arg DB_USER=${DB_USER} --build-arg DB_PASS=${DB_PASS} --build-arg JWT_SECRET=${JWT_SECRET} -t ${DOCKER_IMAGE_NAME} ."
                 }
             }
         }
@@ -65,7 +65,7 @@ pipeline {
                  string(credentialsId: 'DB_PASS', variable: 'DB_PASS')
                 ]) {
                       sh '''
-                            ansible-playbook -i inventory.ini deploy.yml --extra-vars "ansible_user=$ANSIBLE_USER ansible_ssh_pass=$ANSIBLE_PASS DB_USER=$DB_USER DB_PASS=$DB_PASS"
+                            ansible-playbook -i inventory.ini deploy.yml --extra-vars "ansible_user=$ANSIBLE_USER ansible_ssh_pass=$ANSIBLE_PASS DB_USER=$DB_USER DB_PASS=$DB_PASS JWT_SECRET=$JWT_SECRET"
                          '''
                 }
             }

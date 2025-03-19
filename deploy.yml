@@ -32,21 +32,12 @@
         docker rm expense-tracker-frontend || true
       ignore_errors: yes
 
-#    - name: Run the Docker container
-#      command: >
-#        docker run -it -d --name expense-tracker -p 5000:9090
-#        -e DB_USER={{ DB_USER }}
-#        -e DB_PASS={{ DB_PASS }}
-#        mrunmayi12/expense-tracker:latest
-##      command: docker run -it -d --name expense-tracker -p 5000:9090 mrunmayi12/expense-tracker:latest
-#      register: run_result
-
     - name: Run Backend Container
-      command: docker run -d --name expense-tracker-backend -p 5000:5000 -e DB_USER={{ DB_USER }} -e DB_PASS={{ DB_PASS }} mrunmayi12/expense-tracker:latest
+      command: docker run -d --name expense-tracker-backend -p 5000:5000 -e DB_USER={{ DB_USER }} -e DB_PASS={{ DB_PASS }} -e JWT_SECRET={{ JWT_SECRET }} mrunmayi12/expense-tracker:latest
       register: backend_result
 
     - name: Run Frontend Container
-      command: docker run -d --name expense-tracker-frontend -p 3000:3000 --env REACT_APP_BACKEND_URL=http://backend-ip:5000 mrunmayi12/expense-tracker-frontend:latest
+      command: docker run -d --name expense-tracker-frontend -p 3000:3000 --env VITE_API_URL=http://localhost:5000 mrunmayi12/expense-tracker-frontend:latest
 
     - name: Display Container Run Result
       debug:
