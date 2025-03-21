@@ -12,11 +12,11 @@
       shell: docker network create spendwise-network || true
 
     - name: Pull latest backend Docker image
-      shell: docker pull mrunmayi12/expense-tracker
+      shell: docker pull mrunmayi12/spendwise-backend
       register: pull_result_backend
 
     - name: Pull latest frontend Docker image
-      shell: docker pull mrunmayi12/expense-tracker-frontend:latest
+      shell: docker pull mrunmayi12/spendwise-frontend:latest
       register: pull_result_frontend
 
     - name: Pull latest database Docker image
@@ -33,31 +33,31 @@
 
     - name: Stop and remove old container if it exists
       shell: |
-        docker stop expense-tracker-backend || true
-        docker rm expense-tracker-backend || true
-        docker stop expense-tracker-frontend || true
-        docker rm expense-tracker-frontend || true
-        docker stop expense-tracker-db || true
-        docker rm expense-tracker-db || true
+        docker stop spendwise-backend || true
+        docker rm spendwise-backend || true
+        docker stop spendwise-frontend || true
+        docker rm spendwise-frontend || true
+        docker stop spendwise-db || true
+        docker rm spendwise-db || true
       ignore_errors: yes
 
     - name: Run Database Container
       command: |
-        docker run -d --name expense-tracker-db --network spendwise-network \ 
+        docker run -d --name spendwise-db --network spendwise-network \ 
         -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=spendwise -e MYSQL_USER={{ DB_USER }} -e MYSQL_PASSWORD={{ DB_PASS }} \
         -v mysql_data:/var/lib/mysql -p 3306:3306 mysql:latest
 
     - name: Run Backend Container
       command: |
-        docker run -d --name expense-tracker-backend --network spendwise-network -p 5000:5000 \
+        docker run -d --name spendwise-backend --network spendwise-network -p 5000:5000 \
         -e DB_USER={{ DB_USER }} -e DB_PASS={{ DB_PASS }} -e JWT_SECRET={{ JWT_SECRET }} \
-        -e DB_HOST=expense-tracker-db mrunmayi12/expense-tracker:latest
+        -e DB_HOST=spendwise-db mrunmayi12/spendwise:latest
       register: backend_result
 
     - name: Run Frontend Container
       command: | 
-        docker run -d --name expense-tracker-frontend --network spendwise-network -p 3000:3000 \
-        --env VITE_API_URL=http://expense-tracker-backend:5000 mrunmayi12/expense-tracker-frontend:latest
+        docker run -d --name spendwise-frontend --network spendwise-network -p 3000:3000 \
+        --env VITE_API_URL=http://spendwise-backend:5000 mrunmayi12/spendwise-frontend:latest
 
     - name: Display Container Run Result
       debug:

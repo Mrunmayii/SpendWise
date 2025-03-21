@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-            DOCKER_IMAGE_NAME = 'expense-tracker'
-            DOCKER_TAG = 'mrunmayi12/expense-tracker:latest'
+            DOCKER_IMAGE_NAME = 'spendwise-backend'
+            DOCKER_TAG = 'mrunmayi12/spendwise-backend:latest'
 //             GITHUB_REPO_URL = 'https://github.com/Mrunmayii/SpendWise.git'
             DOCKER_CREDENTIALS = 'docker-cred'
             DB_USER = credentials('DB_USER')
