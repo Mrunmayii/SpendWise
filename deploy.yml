@@ -8,8 +8,8 @@
         name: docker
         state: started
 
-    - name: Create Docker Network
-      shell: docker network create spendwise-network || true
+#    - name: Create Docker Network
+#      shell: docker network create spendwise-network || true
 
     - name: Pull latest backend Docker image
       shell: docker pull mrunmayi12/spendwise-backend
@@ -19,9 +19,9 @@
       shell: docker pull mrunmayi12/spendwise-frontend:latest
       register: pull_result_frontend
 
-    - name: Pull latest database Docker image
-      shell: docker pull mysql:latest
-      register: pull_result_db
+#    - name: Pull latest database Docker image
+#      shell: docker pull mysql:latest
+#      register: pull_result_db
 
     - name: Display Backend Pull Result
       debug:
@@ -37,15 +37,15 @@
         docker rm spendwise-backend || true
         docker stop spendwise-frontend || true
         docker rm spendwise-frontend || true
-        docker stop spendwise-db || true
-        docker rm spendwise-db || true
+#        docker stop spendwise-db || true
+#        docker rm spendwise-db || true
       ignore_errors: yes
 
-    - name: Run Database Container
-      command: |
-        docker run -d --name spendwise-db --network spendwise-network \ 
-        -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=spendwise -e MYSQL_USER={{ DB_USER }} -e MYSQL_PASSWORD={{ DB_PASS }} \
-        -v mysql_data:/var/lib/mysql -p 3306:3306 mysql:latest
+#    - name: Run Database Container
+#      command: |
+#        docker run -d --name spendwise-db --network spendwise-network \
+#        -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=spendwise -e MYSQL_USER={{ DB_USER }} -e MYSQL_PASSWORD={{ DB_PASS }} \
+#        -v mysql_data:/var/lib/mysql -p 3307:3306 mysql:latest
 
     - name: Run Backend Container
       command: |
