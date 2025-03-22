@@ -48,7 +48,7 @@ public class CorsConfig {
                 .csrf(AbstractHttpConfigurer::disable)  // Updated to use the recommended approach
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/expenses/**").authenticated()
+//                        .requestMatchers("/api/v1/expenses/**").authenticated()
 //                        .requestMatchers(HttpMethod.POST, "/api/v1/expenses").authenticated()
                         .anyRequest().authenticated()
                 )

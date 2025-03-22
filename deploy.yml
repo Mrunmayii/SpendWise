@@ -56,7 +56,7 @@
 
     - name: Run Frontend Container
       command: | 
-        docker run -d --name spendwise-frontend --network spendwise-network -p 3000:3000 \
+        docker run -d --name spendwise-frontend --network spendwise-network -p 3000:80 \
         --env VITE_API_URL=http://spendwise-backend:5000 mrunmayi12/spendwise-frontend:latest
 
     - name: Display Container Run Result
