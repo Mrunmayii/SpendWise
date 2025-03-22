@@ -21,27 +21,27 @@ pipeline {
                 }
             }
         }
-        stage('Setup Network & Start Database') {
-            steps {
-                script {
-                    sh 'docker network create spendwise-network || true'
-
-                    sh '''
-                    docker stop spendwise-db || true
-                    docker rm spendwise-db || true
-                    '''
-
-                    sh '''
-                    docker run -d --name spendwise-db --network spendwise-network \
-                    -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=spendwise \
-                    -e MYSQL_USER=${DB_USER} -e MYSQL_PASSWORD=${DB_PASS} \
-                    -v mysql_data:/var/lib/mysql -p 3307:3306 mysql:latest
-                    '''
-
-                    sleep(15)
-                }
-            }
-        }
+//         stage('Setup Network & Start Database') {
+//             steps {
+//                 script {
+//                     sh 'docker network create spendwise-network || true'
+//
+//                     sh '''
+//                     docker stop spendwise-db || true
+//                     docker rm spendwise-db || true
+//                     '''
+//
+//                     sh '''
+//                     docker run -d --name spendwise-db --network spendwise-network \
+//                     -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=spendwise \
+//                     -e MYSQL_USER=${DB_USER} -e MYSQL_PASSWORD=${DB_PASS} \
+//                     -v mysql_data:/var/lib/mysql -p 3307:3306 mysql:latest
+//                     '''
+//
+//                     sleep(15)
+//                 }
+//             }
+//         }
         stage('Build') {
             steps {
                 sh 'mvn clean package'
