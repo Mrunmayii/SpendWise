@@ -7,7 +7,6 @@ pipeline {
             DOCKER_CREDENTIALS = 'docker-cred'
     }
     stages {
-        }
         stage('Retrieve .env from Jenkins') {
             steps {
                 withCredentials([file(credentialsId: 'spendwise-env', variable: 'ENV_FILE')]) {
