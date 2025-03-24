@@ -5,43 +5,18 @@ pipeline {
             DOCKER_TAG = 'mrunmayi12/spendwise-backend:latest'
 //             GITHUB_REPO_URL = 'https://github.com/Mrunmayii/SpendWise.git'
             DOCKER_CREDENTIALS = 'docker-cred'
-            DB_USER = credentials('DB_USER')
-            DB_PASS = credentials('DB_PASS')
-            JWT_SECRET = credentials('JWT_SECRET')
     }
     stages {
-        stage('Set Environment Variables') {
+        }
+        stage('Retrieve .env from Jenkins') {
             steps {
-                withCredentials([string(credentialsId: 'DB_USER', variable: 'DB_USER'),
-                                 string(credentialsId: 'DB_PASS', variable: 'DB_PASS')]) {
+                withCredentials([file(credentialsId: 'spendwise-env', variable: 'ENV_FILE')]) {
                     script {
-                        env.DB_USER = DB_USER
-                        env.DB_PASS = DB_PASS
+                        sh "cp $ENV_FILE .env"
                     }
                 }
             }
         }
-//         stage('Setup Network & Start Database') {
-//             steps {
-//                 script {
-//                     sh 'docker network create spendwise-network || true'
-//
-//                     sh '''
-//                     docker stop spendwise-db || true
-//                     docker rm spendwise-db || true
-//                     '''
-//
-//                     sh '''
-//                     docker run -d --name spendwise-db --network spendwise-network \
-//                     -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=spendwise \
-//                     -e MYSQL_USER=${DB_USER} -e MYSQL_PASSWORD=${DB_PASS} \
-//                     -v mysql_data:/var/lib/mysql -p 3307:3306 mysql:latest
-//                     '''
-//
-//                     sleep(15)
-//                 }
-//             }
-//         }
         stage('Build') {
             steps {
                 sh 'mvn clean package'
@@ -51,7 +26,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker --version'
-                    sh "docker build --build-arg DB_USER=${DB_USER} --build-arg DB_PASS=${DB_PASS} --build-arg JWT_SECRET=${JWT_SECRET} -t ${DOCKER_IMAGE_NAME} ."
+                    sh "docker build -t ${DOCKER_IMAGE_NAME} ."
                 }
             }
         }
@@ -81,13 +56,12 @@ pipeline {
         }
         stage('Deploy using Ansible') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'local-cred', usernameVariable: 'ANSIBLE_USER', passwordVariable: 'ANSIBLE_PASS'),
-                 string(credentialsId: 'DB_USER', variable: 'DB_USER'),
-                 string(credentialsId: 'DB_PASS', variable: 'DB_PASS')
-                ]) {
-                      sh '''
-                            ansible-playbook -i inventory.ini deploy.yml --extra-vars "ansible_user=$ANSIBLE_USER ansible_ssh_pass=$ANSIBLE_PASS DB_USER=$DB_USER DB_PASS=$DB_PASS JWT_SECRET=$JWT_SECRET"
-                         '''
+                withCredentials([file(credentialsId: 'spendwise-env', variable: 'ENV_FILE')]) {
+                    script {
+                        sh '''
+                            ansible-playbook -i inventory.ini deploy.yml --extra-vars "ENV_PATH=$(pwd)/.env"
+                        '''
+                    }
                 }
             }
         }
