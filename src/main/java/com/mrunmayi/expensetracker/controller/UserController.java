@@ -18,11 +18,13 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody @Valid LoginRequest request) {
+        System.out.println(request);
         return ResponseEntity.ok(userService.login(request));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUpUser(@RequestBody @Valid SignUpRequest request) {
+        System.out.println(request);
         return ResponseEntity.ok(userService.signUpUser(request));
     }
 

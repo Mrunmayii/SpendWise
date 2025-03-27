@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
-public record ExpenseDTO (
+public record ExpenseRequest(
 
 
         @NotNull(message="Expense name is required")
@@ -15,7 +15,6 @@ public record ExpenseDTO (
         String name,
 
         @NotNull(message="Amount is required")
-        @NotEmpty(message = "Amount is required")
         @JsonProperty("amount")
         Double amount,
 

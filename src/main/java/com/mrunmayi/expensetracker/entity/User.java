@@ -1,17 +1,17 @@
 package com.mrunmayi.expensetracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
-@Data
+//@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @NoArgsConstructor
@@ -63,5 +63,8 @@ public class User implements UserDetails {
         return true;
     }
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Expense> expenses;
     // Getters and Setters
 }

@@ -1,11 +1,14 @@
 package com.mrunmayi.expensetracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 
-@Data
+//@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @NoArgsConstructor
@@ -25,4 +28,9 @@ public class Expense {
 
     private String category;
     private Date date;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)  // Foreign key to Users table
+    @JsonIgnore
+    private User user;
 }

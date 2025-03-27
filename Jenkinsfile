@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker --version'
-                    sh "docker build -t ${DOCKER_IMAGE_NAME} ."
+                    sh "docker build --build-arg SPRING_PROFILES_ACTIVE=docker -t ${DOCKER_IMAGE_NAME} ."
                 }
             }
         }

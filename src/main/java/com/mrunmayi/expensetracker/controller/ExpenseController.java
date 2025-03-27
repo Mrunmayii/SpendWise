@@ -1,9 +1,11 @@
 package com.mrunmayi.expensetracker.controller;
 
-import com.mrunmayi.expensetracker.dto.ExpenseDTO;
-import com.mrunmayi.expensetracker.entity.Expense;
+import com.mrunmayi.expensetracker.dto.ExpenseRequest;
+import com.mrunmayi.expensetracker.dto.ExpenseResponse;
 import com.mrunmayi.expensetracker.service.ExpenseService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,21 +26,23 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Expense>> getExpenses() {
-        List<Expense> expenseList = expenseService.getAllExpenses();
+    public ResponseEntity<List<ExpenseResponse>> getExpenses(@AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println("Inside getExpenses");
+        System.out.println("user details are: "+ userDetails.getUsername());
+        List<ExpenseResponse> expenseList = expenseService.getAllExpenses(userDetails);
         System.out.println("Fetched Expenses: " + expenseList); // Debugging
         return ResponseEntity.ok(expenseList);
     }
 
     @PostMapping
-    public ResponseEntity<String> addExpense(@RequestBody ExpenseDTO expenseDTO) {
-        System.out.println("Received request: " + expenseDTO);
-        return ResponseEntity.ok(expenseService.addExpense(expenseDTO));
+    public ResponseEntity<String> addExpense(@RequestBody ExpenseRequest expenseRequest, @AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println("Received request: " + expenseRequest);
+        return ResponseEntity.ok(expenseService.addExpense(expenseRequest, userDetails));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
-        expenseService.deleteExpense(id);
-        return ResponseEntity.noContent().build(); // Returns 204 No Content
+    public ResponseEntity<Void> deleteExpense(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        expenseService.deleteExpense(id, userDetails);
+        return ResponseEntity.noContent().build();
     }
 }
