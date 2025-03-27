@@ -11,7 +11,8 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'spendwise-env', variable: 'ENV_FILE')]) {
                     script {
-                        sh "cp $ENV_FILE .env"
+                        sh 'cp $ENV_FILE .env'
+                        sh 'chmod 644 .env'
                     }
                 }
             }
